@@ -1,7 +1,49 @@
 from tkinter import *
+from tkinter import messagebox as mb, messagebox
+from random import randint, choice, shuffle
+import pyperclip
+
+
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+# Password Generator Project
+def generate_password():
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+               'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+               'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
+
+    password_letters = [choice(letters) for _ in range(randint(8, 10))]
+    password_symbols = [choice(symbols) for _ in range(randint(2, 4))]
+    password_numbers = [choice(numbers) for _ in range(randint(2, 4))]
+
+    password_list = password_letters + password_symbols + password_numbers
+    shuffle(password_list)
+
+    password = "".join(password_list)
+
+    password_entry.insert(END, password)
+    pyperclip.copy(password)
+    print(pyperclip.paste())
+
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
+def save_password():
+    website = website_entry.get()
+    email = user_entry.get()
+    password = password_entry.get()
+
+    if website == '' or email == '' or password == '':
+        messagebox.showerror(title="Oops", message="Please don't leave any fields empty!")
+    else:
+        is_ok = mb.askokcancel(title=website, message=f' There are the details entered: \nEmail: {email}'
+                                                      f'\nPassword: {password} \nIs it okay to save?')
+        if is_ok:
+            with open('password.txt', mode="a") as password_data:
+                password_data.write(f"{website} | {email} | {password}\n")
+                website_entry.delete(0, END)
+                password_entry.delete(0, END)
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 # Window
@@ -35,11 +77,13 @@ password_label.grid(row=3, column=0)
 # Website entry
 website_entry = Entry(width=35)
 website_entry.grid(row=1, column=1, columnspan=2)
-website_entry.config(bg="white", fg="black", highlightthickness=0)
+website_entry.config(bg="white", fg="black")
+website_entry.focus()
 # User Entry
 user_entry = Entry(width=35)
 user_entry.grid(row=2, column=1, columnspan=2)
 user_entry.config(bg="white", fg="black", highlightthickness=0)
+user_entry.insert(END, "peralta.michael27@gmail.com")
 # Password Entry
 password_entry = Entry(width=22)
 password_entry.grid(row=3, column=1)
@@ -47,11 +91,11 @@ password_entry.config(bg="white", fg="black", highlightthickness=0)
 
 # Buttons
 # Generate Password button
-pass_generator_button = Button(text="Generate Password")
+pass_generator_button = Button(text="Generate Password", command=generate_password)
 pass_generator_button.config(bg="white", fg="black", highlightthickness=0, width=9)
 pass_generator_button.grid(row=3, column=2)
 # Add button
-add_button = Button(text="Add")
+add_button = Button(text="Add", command=save_password)
 add_button.config(bg="white", fg="black", width=32)
 add_button.grid(row=4, column=1, columnspan=2)
 
