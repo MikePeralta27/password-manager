@@ -44,6 +44,7 @@ def save_password():
                 website_entry.delete(0, END)
                 password_entry.delete(0, END)
 
+
 # ---------------------------- UI SETUP ------------------------------- #
 # Window
 window = Tk()
