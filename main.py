@@ -44,7 +44,6 @@ def save_password():
                 website_entry.delete(0, END)
                 password_entry.delete(0, END)
 
-
 # ---------------------------- UI SETUP ------------------------------- #
 # Window
 window = Tk()
@@ -53,7 +52,6 @@ window.config(bg="white")
 window.config(pady=50, padx=50)
 
 # Canvas
-
 canvas = Canvas(width=200, height=200, background="white", highlightthickness=0)
 logo_image = PhotoImage(file="logo.png")
 canvas.create_image(100, 100, image=logo_image)
