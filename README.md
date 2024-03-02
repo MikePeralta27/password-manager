@@ -1,5 +1,5 @@
 # Password Generator
-This is a practice project of a password generator where user can generate and store passwords.
+This is a practice project of a password generator where user can generate and store passwords builded with python.
 
 ## Libraries
 1. TKinter
