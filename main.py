@@ -2,6 +2,9 @@ from tkinter import *
 from tkinter import messagebox as mb, messagebox
 from random import randint, choice, shuffle
 import pyperclip
+import json
+
+GREEN = "#9bdeac"
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
@@ -21,7 +24,7 @@ def generate_password():
     shuffle(password_list)
 
     password = "".join(password_list)
-
+    password_entry.delete(0, END)
     password_entry.insert(END, password)
     pyperclip.copy(password)
     print(pyperclip.paste())
@@ -32,17 +35,30 @@ def save_password():
     website = website_entry.get()
     email = user_entry.get()
     password = password_entry.get()
+    new_data = {website: {
+        "email": email,
+        "password": password,
+    }}
 
     if website == '' or email == '' or password == '':
         messagebox.showerror(title="Oops", message="Please don't leave any fields empty!")
     else:
-        is_ok = mb.askokcancel(title=website, message=f' There are the details entered: \nEmail: {email}'
-                                                      f'\nPassword: {password} \nIs it okay to save?')
-        if is_ok:
-            with open('password.txt', mode="a") as password_data:
-                password_data.write(f"{website} | {email} | {password}\n")
-                website_entry.delete(0, END)
-                password_entry.delete(0, END)
+        try:
+            with open('data.json', mode="r") as data_file:
+                # Reading old data
+                data = json.load(data_file)
+        except FileNotFoundError:
+            with open('data.json', mode="w") as data_file:
+                json.dump(new_data, data_file, indent=4)
+        else:
+            # Updating old data with new data
+            data.update(new_data)
+            with open('data.json', mode="w") as data_file:
+                # Saving updated Data
+                json.dump(data, data_file, indent=4)
+        finally:
+            website_entry.delete(0, END)
+            password_entry.delete(0, END)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -95,7 +111,9 @@ pass_generator_button.config(bg="white", fg="black", highlightthickness=0, width
 pass_generator_button.grid(row=3, column=2)
 # Add button
 add_button = Button(text="Add", command=save_password)
-add_button.config(bg="white", fg="black", width=32)
+add_button.config(bg=GREEN, fg="black", width=32)
 add_button.grid(row=4, column=1, columnspan=2)
+# Search button
+search_button = Button(text="Search")
 
 window.mainloop()
